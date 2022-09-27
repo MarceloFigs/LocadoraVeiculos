@@ -10,11 +10,6 @@ namespace LocadoraVeiculos.Repository.EFCore
         {
 
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("DefaultConnection");
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Alocação>().HasKey(a => new { a.Cpf, a.Chassi });

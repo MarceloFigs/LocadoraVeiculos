@@ -4,6 +4,7 @@ using LocadoraVeiculos.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Net;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -39,7 +40,7 @@ namespace LocadoraVeiculos.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocorreu um erro ao buscar cliente");
-                return StatusCode(500, ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -59,7 +60,7 @@ namespace LocadoraVeiculos.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocorreu um erro ao cadastrar cliente");
-                return StatusCode(500, ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -79,7 +80,7 @@ namespace LocadoraVeiculos.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocorreu um erro ao excluir cliente");
-                return StatusCode(500, ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -99,7 +100,7 @@ namespace LocadoraVeiculos.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Ocorreu um erro ao atualizar cliente");
-                return StatusCode(500, ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
     }
