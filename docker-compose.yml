@@ -6,6 +6,10 @@ services:
     build:
       context: .
       dockerfile: LocadoraVeiculos/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "8090:80"
 
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -14,3 +18,7 @@ services:
       MSSQL_SA_PASSWORD: Senha1234
     ports:
       - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+volumes:
+  sqlvolume:
