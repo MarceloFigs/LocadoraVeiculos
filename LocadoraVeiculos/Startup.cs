@@ -1,8 +1,12 @@
+using FluentValidation;
+using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
 using LocadoraVeiculos.Repository.EFCore;
+using LocadoraVeiculos.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,14 +35,19 @@ namespace LocadoraVeiculos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<LocadoraVeiculosContext>(options => 
+            services.AddDbContext<LocadoraVeiculosContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddValidatorsFromAssemblyContaining<ClienteValidator>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LocadoraVeiculos", Version = "v1" });
             });
             services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IValidator<Cliente>, ClienteValidator>();
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +62,14 @@ namespace LocadoraVeiculos
 
             app.UseHttpsRedirection();
 
+            app.UseSerilogRequestLogging();
+
             app.UseRouting();
+
+            app.UseCors(cors =>
+            cors.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             app.UseAuthorization();
 
