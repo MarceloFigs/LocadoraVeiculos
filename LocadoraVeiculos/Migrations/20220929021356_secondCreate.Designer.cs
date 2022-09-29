@@ -4,14 +4,16 @@ using LocadoraVeiculos.Repository.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LocadoraVeiculos.Migrations
 {
     [DbContext(typeof(LocadoraVeiculosContext))]
-    partial class LocadoraVeiculosContextModelSnapshot : ModelSnapshot
+    [Migration("20220929021356_secondCreate")]
+    partial class secondCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

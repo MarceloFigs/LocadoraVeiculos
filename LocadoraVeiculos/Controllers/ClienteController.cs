@@ -30,7 +30,7 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 _logger.LogInformation("Buscando cliente");
-                var cliente = _clienteRepository.GetClienteByCpf(cpf);                              
+                var cliente = _clienteRepository.BuscarPorId(cpf);                              
 
                 if (cliente == null)
                     return BadRequest("Cliente não encontrado");
@@ -54,7 +54,7 @@ namespace LocadoraVeiculos.Controllers
                 if (!resultadoValidacao.IsValid)
                     return BadRequest(resultadoValidacao.Errors);
 
-                _clienteRepository.CadastrarCliente(cliente);
+                _clienteRepository.Incluir(cliente);
                 return Ok(cliente);
             }
             catch (Exception ex)
@@ -69,12 +69,12 @@ namespace LocadoraVeiculos.Controllers
         {
             try
             {
-                var cliente = _clienteRepository.GetClienteByCpf(cpf);
+                var cliente = _clienteRepository.BuscarPorId(cpf);
 
                 if (cliente == null)
                     return BadRequest("Cliente não encontrado");
 
-                _clienteRepository.ExcluirCliente(cliente);
+                _clienteRepository.Excluir(cliente);
                 return Ok("Cliente excluido com sucesso!");
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPut("{cpf}")]
-        public IActionResult AtualizarCliente([FromBody] Cliente cliente, string cpf)
+        public IActionResult AtualizarCliente([FromBody] Cliente cliente)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace LocadoraVeiculos.Controllers
                 if (!resultadoValidacao.IsValid)
                     return BadRequest(resultadoValidacao.Errors);
 
-                _clienteRepository.AtualizarCliente(cliente);
+                _clienteRepository.Atualizar(cliente);
                 return Ok("Cliente atualizado com sucesso!");
             }
             catch (Exception ex)

@@ -11,29 +11,25 @@ namespace LocadoraVeiculos.Repository.EFCore
         {
             _context = context;
         }
-
-        public void AtualizarCliente(Cliente cliente)
+        public void Incluir(Cliente obj)
         {
-            _context.Entry(cliente).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Cliente.Add(obj);
             _context.SaveChanges();
-            _context.Entry(cliente).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
         }
-
-        public Cliente GetClienteByCpf(string cpf)
+        public void Excluir(Cliente obj)
+        {
+            _context.Cliente.Remove(obj);
+            _context.SaveChanges();
+        }
+        public void Atualizar(Cliente obj)
+        {
+            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.SaveChanges();
+            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+        }
+        public Cliente BuscarPorId(string cpf)
         {
             return _context.Cliente.FirstOrDefault(c => c.Cpf == cpf);
-        }
-
-        public void CadastrarCliente(Cliente cliente)
-        {
-            _context.Cliente.Add(cliente);
-            _context.SaveChanges();
-        }
-
-        public void ExcluirCliente(Cliente cliente)
-        {
-            _context.Cliente.Remove(cliente);
-            _context.SaveChanges();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace LocadoraVeiculos.Repository
 {
-    public interface IClienteRepository : ICommand<Cliente>, IQuery<Cliente>
+    public interface ICarroRepository : ICommand<Carro>, IQuery<Carro>
     {
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualBasic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 

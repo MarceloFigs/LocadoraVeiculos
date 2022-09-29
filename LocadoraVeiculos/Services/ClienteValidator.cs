@@ -30,12 +30,11 @@ namespace LocadoraVeiculos.Services
                 .NotEmpty().WithMessage("Campo não preenchido")
                 .Length(2,100)
                 .WithMessage("Nome inválido");
-
-            var dataNascimentoMais18 = DateTime.Now.AddYears(-18);
+            
             RuleFor(n => n.DtNascimento).Cascade(CascadeMode.Stop)
                 .NotNull()
                 .NotEmpty().WithMessage("Campo não preenchido")
-                .LessThanOrEqualTo(dataNascimentoMais18)
+                .LessThanOrEqualTo(DateTime.Now.AddYears(-18))
                 .WithMessage("Cliente não é maior de idade");
 
             RuleFor(n => n.Cnh).Cascade(CascadeMode.Stop)

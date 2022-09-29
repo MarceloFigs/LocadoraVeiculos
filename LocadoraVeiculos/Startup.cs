@@ -46,6 +46,12 @@ namespace LocadoraVeiculos
             });
             services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddScoped<IValidator<Cliente>, ClienteValidator>();
+            services.AddScoped<ICarroRepository, CarroRepository>();
+            services.AddScoped<IValidator<Carro>, CarroValidator>();
+            services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+            services.AddScoped<IValidator<Categoria>, CategoriaValidator>();
+            services.AddScoped<IAlocaçãoRepository, AlocaçãoRepository>();
+            services.AddScoped<IValidator<Alocação>, AlocaçãoValidator>();
 
             services.AddCors();
         }
