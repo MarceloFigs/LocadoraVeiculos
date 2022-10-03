@@ -4,7 +4,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace LocadoraVeiculos.Services
+namespace LocadoraVeiculos.Services.Validators
 {
     public class AlocaçãoValidator : AbstractValidator<Alocação>
     {
@@ -13,7 +13,7 @@ namespace LocadoraVeiculos.Services
             RuleFor(n => n.Cpf).Cascade(CascadeMode.Stop)
                 .NotNull()
                 .NotEmpty().WithMessage("Campo não preenchido")
-                .Length(11).WithMessage("Precisa conter 11 digitos");                
+                .Length(11).WithMessage("Precisa conter 11 digitos");
 
             RuleFor(n => n.Chassi).Cascade(CascadeMode.Stop)
                 .NotNull()
@@ -29,7 +29,7 @@ namespace LocadoraVeiculos.Services
             RuleFor(dt => dt.DtEntrega).Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .NotNull().WithMessage("Campo não preenchido")
-                .GreaterThanOrEqualTo(DateTime.Now).WithMessage("Data de saida deve ser igual ou maior que data atual");                
+                .GreaterThanOrEqualTo(DateTime.Now).WithMessage("Data de saida deve ser igual ou maior que data atual");
         }
     }
 }

@@ -9,8 +9,7 @@ namespace LocadoraVeiculos.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
-        public string Chassi { get; set; }
-        public int CodCategoria { get; set; }
+        public string Chassi { get; set; }        
         public string Cor { get; set; }
         public string Modelo { get; set; }
         public string Marca { get; set; }
@@ -19,8 +18,9 @@ namespace LocadoraVeiculos.Models
 
         [JsonIgnore]
         public virtual ICollection<Alocação> Alocação { get; private set; }
+        [ForeignKey("Categoria")]
+        public int CodCategoria { get; set; }
         [JsonIgnore]
-        [ForeignKey("CodCategoria")]
         public virtual Categoria Categoria { get; private set; }
     }
 }

@@ -1,7 +1,5 @@
-﻿using Microsoft.VisualBasic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +15,10 @@ namespace LocadoraVeiculos.Models
         public DateTime DtNascimento { get; set; }
         public string Cnh { get; set; }
         public string Nome { get; set; }
-        public string Endereço { get; set; }
+        public int CEP { get; set; }        
+        public string UF { get; set; }        
+        public string Cidade { get; set; }        
+        public string Logradouro { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Alocação> Alocação { get; private set; }

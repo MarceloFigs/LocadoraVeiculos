@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using LocadoraVeiculos.Models;
 
-namespace LocadoraVeiculos.Services
+namespace LocadoraVeiculos.Services.Validators
 {
     public class CategoriaValidator : AbstractValidator<Categoria>
     {
@@ -15,7 +15,7 @@ namespace LocadoraVeiculos.Services
             RuleFor(n => n.ValorDiaria).Cascade(CascadeMode.Stop)
                 .NotNull()
                 .NotEmpty().WithMessage("Campo não preenchido")
-                .InclusiveBetween(100,10000).WithMessage("Valor deve ser entre 100 e 1000");                
+                .InclusiveBetween(100, 10000).WithMessage("Valor deve ser entre 100 e 1000");
         }
     }
 }

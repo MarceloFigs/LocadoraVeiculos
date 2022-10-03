@@ -5,7 +5,6 @@ namespace LocadoraVeiculos.Repository
 {
     public interface IQuery<T>
     {
-        //IEnumerable<T> BuscarTodos();
         T BuscarPorId(string id);
     }
 }

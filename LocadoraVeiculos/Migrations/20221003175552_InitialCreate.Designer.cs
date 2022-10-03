@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocadoraVeiculos.Migrations
 {
     [DbContext(typeof(LocadoraVeiculosContext))]
-    [Migration("20220929021356_secondCreate")]
-    partial class secondCreate
+    [Migration("20221003175552_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,12 +33,6 @@ namespace LocadoraVeiculos.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DtSaida")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("HrEntrega")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("HrSaida")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Cpf", "Chassi");
@@ -73,8 +67,7 @@ namespace LocadoraVeiculos.Migrations
 
                     b.HasKey("Chassi");
 
-                    b.HasIndex("CodCategoria")
-                        .IsUnique();
+                    b.HasIndex("CodCategoria");
 
                     b.ToTable("Carro");
                 });
@@ -102,19 +95,28 @@ namespace LocadoraVeiculos.Migrations
                     b.Property<string>("Cpf")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("CEP")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Cidade")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Cnh")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DtNascimento")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Endereço")
+                    b.Property<string>("Logradouro")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RG")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UF")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Cpf");
@@ -140,8 +142,8 @@ namespace LocadoraVeiculos.Migrations
             modelBuilder.Entity("LocadoraVeiculos.Models.Carro", b =>
                 {
                     b.HasOne("LocadoraVeiculos.Models.Categoria", "Categoria")
-                        .WithOne("Carro")
-                        .HasForeignKey("LocadoraVeiculos.Models.Carro", "CodCategoria")
+                        .WithMany("Carro")
+                        .HasForeignKey("CodCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

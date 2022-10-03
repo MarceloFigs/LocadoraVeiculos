@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
 using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
+using LocadoraVeiculos.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -14,14 +16,16 @@ namespace LocadoraVeiculos.Controllers
     {
         private readonly ILogger<ClienteController> _logger;
         private readonly IClienteRepository _clienteRepository;
-        private readonly IValidator<Cliente> _validator;        
+        private readonly IValidator<Cliente> _validator;
+        private readonly ICEPService _iCepService;
 
         public ClienteController(ILogger<ClienteController> logger, IClienteRepository clienteRepository,
-            IValidator<Cliente> validator)
+            IValidator<Cliente> validator, ICEPService cepService)
         {
             _logger = logger;
             _clienteRepository = clienteRepository;
-            _validator = validator;            
+            _validator = validator;
+            _iCepService = cepService;
         }
 
         [HttpGet]
@@ -33,7 +37,7 @@ namespace LocadoraVeiculos.Controllers
                 var cliente = _clienteRepository.BuscarPorId(cpf);                              
 
                 if (cliente == null)
-                    return BadRequest("Cliente não encontrado");
+                    return BadRequest("Cliente não encontrado");                
 
                 return Ok(cliente);
             }
@@ -45,10 +49,19 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPost]
-        public IActionResult CadastrarCliente([FromBody] Cliente cliente)
+        public async Task<IActionResult> CadastrarCliente([FromBody] Cliente cliente)
         {
             try
             {
+                var endereco = await _iCepService.BuscarCEP(cliente.CEP);
+
+                if (endereco.UF == null)
+                    return BadRequest("cep invalido");
+
+                cliente.UF = endereco.UF;
+                cliente.Cidade = endereco.Cidade;
+                cliente.Logradouro = endereco.Logradouro;
+
                 var resultadoValidacao = _validator.Validate(cliente);
 
                 if (!resultadoValidacao.IsValid)

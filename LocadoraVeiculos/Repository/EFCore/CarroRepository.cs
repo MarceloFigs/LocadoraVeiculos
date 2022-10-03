@@ -1,5 +1,4 @@
-﻿using Elasticsearch.Net;
-using LocadoraVeiculos.Models;
+﻿using LocadoraVeiculos.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -30,11 +29,9 @@ namespace LocadoraVeiculos.Repository.EFCore
         }
         public Carro BuscarPorId(string chassi)
         {
-            //return _context.Carro.FirstOrDefault(c => c.Chassi == chassi);
             var query = _context.Carro
                 .Where(c => c.Chassi == chassi)
                 .Include(c => c.Categoria).FirstOrDefault();
-
 
             return query;
         }

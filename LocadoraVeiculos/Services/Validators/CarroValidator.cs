@@ -3,7 +3,7 @@ using LocadoraVeiculos.Models;
 using System;
 using System.Text.RegularExpressions;
 
-namespace LocadoraVeiculos.Services
+namespace LocadoraVeiculos.Services.Validators
 {
     public class CarroValidator : AbstractValidator<Carro>
     {
@@ -38,7 +38,7 @@ namespace LocadoraVeiculos.Services
             RuleFor(n => n.Ano).Cascade(CascadeMode.Stop)
                 .NotNull()
                 .NotEmpty().WithMessage("Campo não preenchido")
-                .InclusiveBetween(1000, anoAtual).WithMessage("Valor invalido");            
+                .InclusiveBetween(1000, anoAtual).WithMessage("Valor invalido");
         }
     }
 }

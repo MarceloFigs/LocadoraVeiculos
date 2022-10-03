@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace LocadoraVeiculos.Services
+namespace LocadoraVeiculos.Services.Validators
 {
     public class ClienteValidator : AbstractValidator<Cliente>
     {
@@ -18,19 +18,19 @@ namespace LocadoraVeiculos.Services
                 .Must(cpf => Regex.IsMatch(cpf, "^[0-9]*$")).WithMessage("Número invalido")
                 .Must(cpf => ValidaCPF(cpf)).WithMessage("CPF inválido");
 
-                RuleFor(n => n.RG).Cascade(CascadeMode.Stop)
-                .NotNull()
-                .NotEmpty().WithMessage("Campo não preenchido")
-                .Length(7,11).WithMessage("Precisa entre 7 e 11 digitos")
-                .Must(rg => Regex.IsMatch(rg, "^[0-9]*$")).WithMessage("Número invalido")
-                .WithMessage("RG inválido");
+            RuleFor(n => n.RG).Cascade(CascadeMode.Stop)
+            .NotNull()
+            .NotEmpty().WithMessage("Campo não preenchido")
+            .Length(7, 11).WithMessage("Precisa entre 7 e 11 digitos")
+            .Must(rg => Regex.IsMatch(rg, "^[0-9]*$")).WithMessage("Número invalido")
+            .WithMessage("RG inválido");
 
             RuleFor(n => n.Nome).Cascade(CascadeMode.Stop)
                 .NotNull()
                 .NotEmpty().WithMessage("Campo não preenchido")
-                .Length(2,100)
+                .Length(2, 100)
                 .WithMessage("Nome inválido");
-            
+
             RuleFor(n => n.DtNascimento).Cascade(CascadeMode.Stop)
                 .NotNull()
                 .NotEmpty().WithMessage("Campo não preenchido")
@@ -43,11 +43,9 @@ namespace LocadoraVeiculos.Services
                 .Length(11).WithMessage("Precisa conter 11 digitos")
                 .WithMessage("Cnh inválida");
 
-            RuleFor(n => n.Endereço)
+            RuleFor(n => n.CEP).Cascade(CascadeMode.Stop)
                 .NotNull()
-                .NotEmpty().WithMessage("Campo não preenchido")
-                .Length(2, 100)
-                .WithMessage("Endereço inválido");
+                .NotEmpty().WithMessage("Campo não preenchido");
         }
 
         private bool ValidaCPF(string cpf)
@@ -57,7 +55,7 @@ namespace LocadoraVeiculos.Services
                 cpf == "66666666666" || cpf == "77777777777" || cpf == "88888888888" ||
                 cpf == "99999999999")
             {
-                return false;                
+                return false;
             }
             else
             {
@@ -89,11 +87,11 @@ namespace LocadoraVeiculos.Services
                 int divisao2 = resultado2 % 11;
 
                 int digitoVerificador2;
-                
+
                 if (divisao2 < 2)
                     digitoVerificador2 = 0;
-                else                
-                    digitoVerificador2 = 11 - divisao2;                
+                else
+                    digitoVerificador2 = 11 - divisao2;
 
                 var verificador = string.Concat(digitoVerificador, digitoVerificador2);
                 var ultimosDigitos = cpf.Substring(9);

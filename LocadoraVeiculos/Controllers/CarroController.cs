@@ -32,8 +32,8 @@ namespace LocadoraVeiculos.Controllers
                 _logger.LogInformation("Buscando carro");
                 var carro = _carroRepository.BuscarPorId(chassi);
 
-                //if (carro == null)
-                    //return BadRequest("Carro não encontrado");
+                if (carro == null)
+                    return BadRequest("Carro não encontrado");
 
                 return Ok(carro);
             }

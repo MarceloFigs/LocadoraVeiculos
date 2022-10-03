@@ -30,7 +30,10 @@ namespace LocadoraVeiculos.Migrations
                     DtNascimento = table.Column<DateTime>(nullable: false),
                     Cnh = table.Column<string>(nullable: true),
                     Nome = table.Column<string>(nullable: true),
-                    Endereço = table.Column<string>(nullable: true)
+                    CEP = table.Column<int>(nullable: false),
+                    UF = table.Column<string>(nullable: true),
+                    Cidade = table.Column<string>(nullable: true),
+                    Logradouro = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,7 +50,7 @@ namespace LocadoraVeiculos.Migrations
                     Marca = table.Column<string>(nullable: true),
                     Placa = table.Column<string>(nullable: true),
                     Ano = table.Column<int>(nullable: false),
-                    CodCategoria = table.Column<int>(nullable: true)
+                    CodCategoria = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,7 +60,7 @@ namespace LocadoraVeiculos.Migrations
                         column: x => x.CodCategoria,
                         principalTable: "Categoria",
                         principalColumn: "CodCategoria",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,9 +69,7 @@ namespace LocadoraVeiculos.Migrations
                 {
                     Cpf = table.Column<string>(nullable: false),
                     Chassi = table.Column<string>(nullable: false),
-                    HrSaida = table.Column<DateTime>(nullable: false),
                     DtSaida = table.Column<DateTime>(nullable: false),
-                    HrEntrega = table.Column<DateTime>(nullable: false),
                     DtEntrega = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -96,9 +97,7 @@ namespace LocadoraVeiculos.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Carro_CodCategoria",
                 table: "Carro",
-                column: "CodCategoria",
-                unique: true,
-                filter: "[CodCategoria] IS NOT NULL");
+                column: "CodCategoria");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

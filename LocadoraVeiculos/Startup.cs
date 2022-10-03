@@ -3,23 +3,17 @@ using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
 using LocadoraVeiculos.Repository.EFCore;
 using LocadoraVeiculos.Services;
+using LocadoraVeiculos.Services.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+
 
 namespace LocadoraVeiculos
 {
@@ -35,10 +29,14 @@ namespace LocadoraVeiculos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<ICEPService, CEPService>("CepService", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44327/");
+            });
+
             services.AddDbContext<LocadoraVeiculosContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddValidatorsFromAssemblyContaining<ClienteValidator>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -52,6 +50,7 @@ namespace LocadoraVeiculos
             services.AddScoped<IValidator<Categoria>, CategoriaValidator>();
             services.AddScoped<IAlocaçãoRepository, AlocaçãoRepository>();
             services.AddScoped<IValidator<Alocação>, AlocaçãoValidator>();
+            services.AddScoped<ICEPService, CEPService>();
 
             services.AddCors();
         }

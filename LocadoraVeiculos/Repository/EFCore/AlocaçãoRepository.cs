@@ -1,4 +1,5 @@
 ﻿using LocadoraVeiculos.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +20,12 @@ namespace LocadoraVeiculos.Repository.EFCore
         }
         public Alocação BuscarAlocação(string cpf, string chassi)
         {
-            return _context.Alocação.FirstOrDefault(c => c.Cpf == cpf && c.Chassi == chassi);
+            var query = _context.Alocação.Where(a => a.Cpf == cpf && a.Chassi == chassi)
+                .Include(c => c.Cliente)
+                .Include(c => c.Carro)
+                .FirstOrDefault();
+            
+            return query;
         }
         public Alocação BuscarPorId(string id)
         {
