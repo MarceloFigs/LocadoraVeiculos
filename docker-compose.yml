@@ -12,10 +12,10 @@ services:
       - "8090:80"
 
   db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2017-latest
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: Senha1234
+      MSSQL_SA_PASSWORD: Senha1234!
     ports:
       - "1433:1433"
     volumes:
