@@ -15,9 +15,12 @@ namespace LocadoraVeiculos.Models
         public DateTime DtNascimento { get; set; }
         public string Cnh { get; set; }
         public string Nome { get; set; }
-        public int CEP { get; set; }        
-        public string UF { get; set; }        
-        public string Cidade { get; set; }        
+        public int CEP { get; set; }
+        [JsonIgnore]
+        public string UF { get; set; }
+        [JsonIgnore]
+        public string Cidade { get; set; }
+        [JsonIgnore]
         public string Logradouro { get; set; }
 
         [JsonIgnore]

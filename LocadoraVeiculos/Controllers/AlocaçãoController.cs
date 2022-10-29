@@ -6,6 +6,10 @@ using System.Net;
 using System;
 using LocadoraVeiculos.Models;
 using FluentValidation;
+using AutoMapper;
+using LocadoraVeiculos.Dtos;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -16,17 +20,39 @@ namespace LocadoraVeiculos.Controllers
         private readonly ILogger<AlocaçãoController> _logger;
         private readonly IAlocaçãoRepository _alocaçãoRepository;
         private readonly IValidator<Alocação> _validator;
+        private readonly IMapper _mapper;
 
         public AlocaçãoController(ILogger<AlocaçãoController> logger, IAlocaçãoRepository alocaçãoRepository,
-            IValidator<Alocação> validator)
+            IValidator<Alocação> validator, IMapper mapper)
         {
             _logger = logger;
             _alocaçãoRepository = alocaçãoRepository;
             _validator = validator;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult BuscarAlocação([FromQuery] string cpf, string chassi)
+        public IActionResult BuscarTodasAlocações()
+        {
+            try
+            {
+                _logger.LogInformation("Buscando alocação");
+                var alocação = _alocaçãoRepository.BuscarTodos();
+
+                if (alocação == null)
+                    return BadRequest("alocação não encontrada");
+
+                return Ok(_mapper.Map<IEnumerable<AlocaçãoReadDto>>(alocação));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro ao buscar alocação");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{cpf}/{chassi}", Name = "BuscarAlocaçãoPorId")]
+        public IActionResult BuscarAlocaçãoPorId(string cpf, string chassi)
         {
             try
             {
@@ -36,7 +62,7 @@ namespace LocadoraVeiculos.Controllers
                 if (alocação == null)
                     return BadRequest("alocação não encontrada");
 
-                return Ok(alocação);
+                return Ok(_mapper.Map<AlocaçãoReadDto>(alocação));
             }
             catch (Exception ex)
             {

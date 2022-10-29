@@ -1,10 +1,14 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
+using LocadoraVeiculos.Dtos;
 using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
 using LocadoraVeiculos.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -18,18 +22,40 @@ namespace LocadoraVeiculos.Controllers
         private readonly IClienteRepository _clienteRepository;
         private readonly IValidator<Cliente> _validator;
         private readonly ICEPService _iCepService;
+        private readonly IMapper _mapper;
 
         public ClienteController(ILogger<ClienteController> logger, IClienteRepository clienteRepository,
-            IValidator<Cliente> validator, ICEPService cepService)
+            IValidator<Cliente> validator, ICEPService cepService, IMapper mapper)
         {
             _logger = logger;
             _clienteRepository = clienteRepository;
             _validator = validator;
             _iCepService = cepService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult BuscarCliente([FromQuery] string cpf)
+        public IActionResult BuscarClientes()
+        {
+            try
+            {
+                _logger.LogInformation("Buscando clientes");
+                var cliente = _clienteRepository.BuscarTodos();
+
+                if (cliente == null)
+                    return BadRequest("Cliente não encontrado");
+
+                return Ok(_mapper.Map<IEnumerable<ClienteReadDto>>(cliente));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro ao buscar cliente");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{cpf}", Name = "BuscarClienteCPF")]
+        public IActionResult BuscarClienteCPF(string cpf)
         {
             try
             {
@@ -37,9 +63,11 @@ namespace LocadoraVeiculos.Controllers
                 var cliente = _clienteRepository.BuscarPorId(cpf);                              
 
                 if (cliente == null)
-                    return BadRequest("Cliente não encontrado");                
+                    return BadRequest("Cliente não encontrado");
 
-                return Ok(cliente);
+                //return Ok(cliente);
+
+                return Ok(_mapper.Map<ClienteReadDto>(cliente));
             }
             catch (Exception ex)
             {
@@ -98,10 +126,19 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPut("{cpf}")]
-        public IActionResult AtualizarCliente([FromBody] Cliente cliente)
+        public async Task<IActionResult> AtualizarCliente([FromBody] Cliente cliente)
         {
             try
             {
+                var endereco = await _iCepService.BuscarCEP(cliente.CEP);
+
+                if (endereco.UF == null)
+                    return BadRequest("cep invalido");
+
+                cliente.UF = endereco.UF;
+                cliente.Cidade = endereco.Cidade;
+                cliente.Logradouro = endereco.Logradouro;
+
                 var resultadoValidacao = _validator.Validate(cliente);
 
                 if (!resultadoValidacao.IsValid)

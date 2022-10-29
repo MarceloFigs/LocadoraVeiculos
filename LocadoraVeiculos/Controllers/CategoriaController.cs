@@ -23,8 +23,29 @@ namespace LocadoraVeiculos.Controllers
             _categoriaRepository = categoriaRepository;
             _validator = validator;
         }
+
         [HttpGet]
-        public IActionResult BuscarCategoria([FromQuery] string id)
+        public IActionResult BuscarCategoria()
+        {
+            try
+            {
+                _logger.LogInformation("Buscando categoria");
+                var categoria = _categoriaRepository.BuscarTodos();
+
+                if (categoria == null)
+                    return BadRequest("categoria não encontrada");
+
+                return Ok(categoria);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro ao buscar categoria");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{id}", Name = "BuscarCategoriaPorID")]
+        public IActionResult BuscarCategoriaPorId(string id)
         {
             try
             {

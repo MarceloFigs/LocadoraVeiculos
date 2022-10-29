@@ -1,4 +1,6 @@
 ﻿using LocadoraVeiculos.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LocadoraVeiculos.Repository.EFCore
@@ -23,13 +25,18 @@ namespace LocadoraVeiculos.Repository.EFCore
         }
         public void Atualizar(Cliente obj)
         {
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(obj).State = EntityState.Modified;
             _context.SaveChanges();
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+            _context.Entry(obj).State = EntityState.Detached;
         }
         public Cliente BuscarPorId(string cpf)
         {
             return _context.Cliente.FirstOrDefault(c => c.Cpf == cpf);
+        }
+
+        public IEnumerable<Cliente> BuscarTodos()
+        {
+            return _context.Cliente.ToList();
         }
     }
 }

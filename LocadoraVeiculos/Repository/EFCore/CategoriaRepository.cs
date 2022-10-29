@@ -1,4 +1,5 @@
 ﻿using LocadoraVeiculos.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LocadoraVeiculos.Repository.EFCore
@@ -20,6 +21,11 @@ namespace LocadoraVeiculos.Repository.EFCore
         public Categoria BuscarPorId(string id)
         {
             return _context.Categoria.FirstOrDefault(c => c.CodCategoria == int.Parse(id));
+        }
+
+        public IEnumerable<Categoria> BuscarTodos()
+        {
+            return _context.Categoria.ToList();
         }
 
         public void Excluir(Categoria obj)

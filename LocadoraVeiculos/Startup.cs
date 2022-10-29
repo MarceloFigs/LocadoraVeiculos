@@ -51,6 +51,7 @@ namespace LocadoraVeiculos
             services.AddScoped<IAlocaçãoRepository, AlocaçãoRepository>();
             services.AddScoped<IValidator<Alocação>, AlocaçãoValidator>();
             services.AddScoped<ICEPService, CEPService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddCors();
         }

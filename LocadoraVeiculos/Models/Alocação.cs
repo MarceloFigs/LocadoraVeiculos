@@ -12,10 +12,10 @@ namespace LocadoraVeiculos.Models
         public DateTime DtSaida { get; set; }        
         public DateTime DtEntrega { get; set; }
 
-        //[JsonIgnore]
+        [JsonIgnore]
         [ForeignKey("Cpf")]
         public Cliente Cliente { get; set; }
-        //[JsonIgnore]
+        [JsonIgnore]
         [ForeignKey("Chassi")]
         public Carro Carro { get; set; }
     }

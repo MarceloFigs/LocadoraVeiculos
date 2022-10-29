@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System;
+using AutoMapper;
+using LocadoraVeiculos.Dtos;
+using System.Collections.Generic;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -16,16 +19,38 @@ namespace LocadoraVeiculos.Controllers
         private readonly ILogger<CarroController> _logger;
         private readonly ICarroRepository _carroRepository;
         private readonly IValidator<Carro> _validator;
+        private readonly IMapper _mapper;
         public CarroController(ILogger<CarroController> logger, ICarroRepository carroRepository,
-            IValidator<Carro> validator)
+            IValidator<Carro> validator, IMapper mapper)
         {
             _logger = logger;
             _carroRepository = carroRepository;
             _validator = validator;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult BuscarCarro([FromQuery] string chassi)
+        public IActionResult BuscarCarros()
+        {
+            try
+            {
+                _logger.LogInformation("Buscando carro");
+                var carro = _carroRepository.BuscarTodos();
+
+                if (carro == null)
+                    return BadRequest("Carro não encontrado");
+
+                return Ok(_mapper.Map<IEnumerable<CarroReadDto>>(carro));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro ao buscar carro");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{chassi}", Name = "BuscarCarroPorChassi")]
+        public IActionResult BuscarCarroPorChassi(string chassi)
         {
             try
             {
@@ -35,7 +60,7 @@ namespace LocadoraVeiculos.Controllers
                 if (carro == null)
                     return BadRequest("Carro não encontrado");
 
-                return Ok(carro);
+                return Ok(_mapper.Map<CarroReadDto>(carro));
             }
             catch (Exception ex)
             {

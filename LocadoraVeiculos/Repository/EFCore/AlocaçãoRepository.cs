@@ -14,15 +14,16 @@ namespace LocadoraVeiculos.Repository.EFCore
         }
         public void Atualizar(Alocação obj)
         {
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(obj).State = EntityState.Modified;
             _context.SaveChanges();
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+            _context.Entry(obj).State = EntityState.Detached;
         }
         public Alocação BuscarAlocação(string cpf, string chassi)
         {
             var query = _context.Alocação.Where(a => a.Cpf == cpf && a.Chassi == chassi)
                 .Include(c => c.Cliente)
                 .Include(c => c.Carro)
+                .Include(c => c.Carro.Categoria)
                 .FirstOrDefault();
             
             return query;
@@ -34,7 +35,11 @@ namespace LocadoraVeiculos.Repository.EFCore
 
         public IEnumerable<Alocação> BuscarTodos()
         {
-            return _context.Alocação.ToList();
+            var query = _context.Alocação
+                .Include(cl => cl.Cliente)
+                .Include(cr => cr.Carro).Include(c => c.Carro.Categoria).ToList();
+
+            return query;
         }
 
         public void Excluir(Alocação obj)
