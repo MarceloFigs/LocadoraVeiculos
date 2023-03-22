@@ -1,6 +1,5 @@
 ﻿using LocadoraVeiculos.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace LocadoraVeiculos.Repository.EFCore

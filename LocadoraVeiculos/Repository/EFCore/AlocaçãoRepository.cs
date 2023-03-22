@@ -20,10 +20,11 @@ namespace LocadoraVeiculos.Repository.EFCore
         }
         public Alocação BuscarAlocação(string cpf, string chassi)
         {
-            var query = _context.Alocação.Where(a => a.Cpf == cpf && a.Chassi == chassi)
+            var query = _context.Alocação
                 .Include(c => c.Cliente)
                 .Include(c => c.Carro)
                 .Include(c => c.Carro.Categoria)
+                .Where(a => a.Cpf == cpf && a.Chassi == chassi)
                 .FirstOrDefault();
             
             return query;

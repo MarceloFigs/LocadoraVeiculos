@@ -8,7 +8,6 @@ namespace LocadoraVeiculos.Profiles
     {
         public ClienteProfile()
         {
-            // Source -> target
             CreateMap<Cliente, ClienteReadDto>();
         }
     }

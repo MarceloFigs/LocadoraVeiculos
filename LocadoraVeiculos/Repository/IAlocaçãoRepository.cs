@@ -1,5 +1,4 @@
 ﻿using LocadoraVeiculos.Models;
-using System.Collections.Generic;
 
 namespace LocadoraVeiculos.Repository
 {

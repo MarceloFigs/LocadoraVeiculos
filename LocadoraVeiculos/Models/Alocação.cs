@@ -1,7 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using System.Text.Json.Serialization;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LocadoraVeiculos.Models
 {

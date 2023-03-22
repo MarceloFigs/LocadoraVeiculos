@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using LocadoraVeiculos.Models;
 using System;
-using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace LocadoraVeiculos.Services.Validators
 {

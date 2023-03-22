@@ -30,9 +30,10 @@ namespace LocadoraVeiculos.Repository.EFCore
         }
         public Carro BuscarPorId(string chassi)
         {
-            var query = _context.Carro
+            var query = _context.Carro                
+                .Include(c => c.Categoria)
                 .Where(c => c.Chassi == chassi)
-                .Include(c => c.Categoria).FirstOrDefault();
+                .FirstOrDefault();
 
             return query;
         }

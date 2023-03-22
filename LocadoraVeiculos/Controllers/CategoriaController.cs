@@ -1,11 +1,10 @@
-﻿using LocadoraVeiculos.Models;
+﻿using FluentValidation;
+using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
-using LocadoraVeiculos.Repository.EFCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System;
-using FluentValidation;
+using System.Net;
 
 namespace LocadoraVeiculos.Controllers
 {

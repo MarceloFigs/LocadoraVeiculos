@@ -7,7 +7,6 @@ using LocadoraVeiculos.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -64,8 +63,6 @@ namespace LocadoraVeiculos.Controllers
 
                 if (cliente == null)
                     return BadRequest("Cliente não encontrado");
-
-                //return Ok(cliente);
 
                 return Ok(_mapper.Map<ClienteReadDto>(cliente));
             }

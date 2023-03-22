@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using LocadoraVeiculos.Models;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Text.RegularExpressions;
 
 namespace LocadoraVeiculos.Services.Validators
