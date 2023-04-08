@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Repository
 {
     public interface ICommand<T>
     {
-        void Incluir(T obj);
-        void Excluir(T obj);
-        void Atualizar(T obj);
+        bool Incluir(T obj);
+        bool Excluir(T obj);
+        bool Atualizar(T obj);
 
-        IEnumerable<T> BuscarTodos();
+        Task<IEnumerable<T>> BuscarTodosAsync();
     }
 }

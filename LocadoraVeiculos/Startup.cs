@@ -3,6 +3,7 @@ using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
 using LocadoraVeiculos.Repository.EFCore;
 using LocadoraVeiculos.Services;
+using LocadoraVeiculos.Services.Interfaces;
 using LocadoraVeiculos.Services.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,6 @@ namespace LocadoraVeiculos
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient<ICEPService, CEPService>("CepService");
-
             services.AddDbContext<LocadoraVeiculosContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -39,7 +39,9 @@ namespace LocadoraVeiculos
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LocadoraVeiculos", Version = "v1" });
             });
-            services.AddScoped<IClienteRepository, ClienteRepository>();
+
+            services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();            
             services.AddScoped<IValidator<Cliente>, ClienteValidator>();
             services.AddScoped<ICarroRepository, CarroRepository>();
             services.AddScoped<IValidator<Carro>, CarroValidator>();

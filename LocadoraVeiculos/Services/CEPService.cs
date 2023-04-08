@@ -19,7 +19,6 @@ namespace LocadoraVeiculos.Services
 
         public async Task<CEP> BuscarCEP(int cep)
         {
-
             var client = _httpClientFactory.CreateClient("CepService");
             var url = $"{_configuration["CepServiceUrl:BaseUrl"]}{cep}/json";
             var response = await client.GetAsync(url);
@@ -27,6 +26,14 @@ namespace LocadoraVeiculos.Services
             var endereco = JsonConvert.DeserializeObject<CEP>(content);
 
             return endereco;
+        }
+        public Cliente AtribuirCep(Cliente cliente, CEP cep)
+        { 
+            cliente.UF = cep.UF;
+            cliente.Cidade = cep.Cidade;
+            cliente.Logradouro = cep.Logradouro;
+
+            return cliente;
         }
     }
 }

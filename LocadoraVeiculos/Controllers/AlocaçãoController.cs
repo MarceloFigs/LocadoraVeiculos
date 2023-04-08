@@ -35,7 +35,7 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 _logger.LogInformation("Buscando alocação");
-                var alocação = _alocaçãoRepository.BuscarTodos();
+                var alocação = _alocaçãoRepository.BuscarTodosAsync();
 
                 if (alocação == null)
                     return BadRequest("alocação não encontrada");

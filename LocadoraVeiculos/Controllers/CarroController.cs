@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -34,7 +35,7 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 _logger.LogInformation("Buscando carro");
-                var carro = _carroRepository.BuscarTodos();
+                var carro = _carroRepository.BuscarTodosAsync();
 
                 if (carro == null)
                     return BadRequest("Carro não encontrado");
@@ -54,7 +55,7 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 _logger.LogInformation("Buscando carro");
-                var carro = _carroRepository.BuscarPorId(chassi);
+                var carro = _carroRepository.BuscarPorIdAsync(chassi);
 
                 if (carro == null)
                     return BadRequest("Carro não encontrado");
@@ -89,11 +90,11 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpDelete("{chassi}")]
-        public IActionResult ExcluirCliente(string chassi)
+        public async Task<IActionResult> ExcluirCliente(string chassi)
         {
             try
             {
-                var carro = _carroRepository.BuscarPorId(chassi);
+                var carro = await _carroRepository.BuscarPorIdAsync(chassi);
 
                 if (carro == null)
                     return BadRequest("Carro não encontrado");

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Repository.EFCore
 {
@@ -12,11 +13,12 @@ namespace LocadoraVeiculos.Repository.EFCore
         {
             _context = context;
         }
-        public void Atualizar(Alocação obj)
+        public bool Atualizar(Alocação obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
-            _context.SaveChanges();
+            var resultado = _context.SaveChanges() > 0;
             _context.Entry(obj).State = EntityState.Detached;
+            return resultado;
         }
         public Alocação BuscarAlocação(string cpf, string chassi)
         {
@@ -29,30 +31,30 @@ namespace LocadoraVeiculos.Repository.EFCore
             
             return query;
         }
-        public Alocação BuscarPorId(string id)
+        public async Task<Alocação> BuscarPorIdAsync(string id)
         {
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<Alocação> BuscarTodos()
+        public async Task<IEnumerable<Alocação>> BuscarTodosAsync()
         {
-            var query = _context.Alocação
+            var query = await _context.Alocação
                 .Include(cl => cl.Cliente)
-                .Include(cr => cr.Carro).Include(c => c.Carro.Categoria).ToList();
+                .Include(cr => cr.Carro).Include(c => c.Carro.Categoria).ToListAsync();
 
             return query;
         }
 
-        public void Excluir(Alocação obj)
+        public bool Excluir(Alocação obj)
         {
             _context.Alocação.Remove(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
 
-        public void Incluir(Alocação obj)
+        public bool Incluir(Alocação obj)
         {
             _context.Alocação.Add(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
     }
 }

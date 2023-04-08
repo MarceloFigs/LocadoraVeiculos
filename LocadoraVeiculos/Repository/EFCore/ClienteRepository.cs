@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Repository.EFCore
 {
@@ -13,30 +14,31 @@ namespace LocadoraVeiculos.Repository.EFCore
         {
             _context = context;
         }
-        public void Incluir(Cliente obj)
+        public bool Incluir(Cliente obj)
         {
             _context.Cliente.Add(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
-        public void Excluir(Cliente obj)
+        public bool Excluir(Cliente obj)
         {
             _context.Cliente.Remove(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
-        public void Atualizar(Cliente obj)
+        public bool Atualizar(Cliente obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
-            _context.SaveChanges();
+            var resultado = _context.SaveChanges() > 0;
             _context.Entry(obj).State = EntityState.Detached;
+            return resultado;
         }
-        public Cliente BuscarPorId(string cpf)
+        public async Task<Cliente> BuscarPorIdAsync(string cpf)
         {
-            return _context.Cliente.FirstOrDefault(c => c.Cpf == cpf);
+            return await _context.Cliente.FirstOrDefaultAsync(c => c.Cpf == cpf);            
         }
 
-        public IEnumerable<Cliente> BuscarTodos()
+        public async Task<IEnumerable<Cliente>> BuscarTodosAsync()
         {
-            return _context.Cliente.ToList();
+            return await _context.Cliente.ToListAsync();
         }
     }
 }

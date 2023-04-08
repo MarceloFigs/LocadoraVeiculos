@@ -1,6 +1,8 @@
 ﻿using LocadoraVeiculos.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Repository.EFCore
 {
@@ -11,33 +13,34 @@ namespace LocadoraVeiculos.Repository.EFCore
         {
             _context = context;
         }
-        public void Atualizar(Categoria obj)
+        public bool Atualizar(Categoria obj)
         {
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _context.SaveChanges();
-            _context.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+            _context.Entry(obj).State = EntityState.Modified;
+            var resultado = _context.SaveChanges() > 0;
+            _context.Entry(obj).State = EntityState.Detached;
+            return resultado;
         }
 
-        public Categoria BuscarPorId(string id)
+        public async Task<Categoria> BuscarPorIdAsync(string id)
         {
-            return _context.Categoria.FirstOrDefault(c => c.CodCategoria == int.Parse(id));
+            return await _context.Categoria.FirstOrDefaultAsync(c => c.CodCategoria == int.Parse(id));
         }
 
-        public IEnumerable<Categoria> BuscarTodos()
+        public async Task<IEnumerable<Categoria>> BuscarTodosAsync()
         {
-            return _context.Categoria.ToList();
+            return await _context.Categoria.ToListAsync();
         }
 
-        public void Excluir(Categoria obj)
+        public bool Excluir(Categoria obj)
         {
             _context.Categoria.Remove(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
 
-        public void Incluir(Categoria obj)
+        public bool Incluir(Categoria obj)
         {
             _context.Categoria.Add(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
     }
 }

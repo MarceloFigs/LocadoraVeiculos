@@ -1,7 +1,9 @@
-﻿namespace LocadoraVeiculos.Repository
+﻿using System.Threading.Tasks;
+
+namespace LocadoraVeiculos.Repository
 {
     public interface IQuery<T>
     {
-        T BuscarPorId(string id);
+        Task<T> BuscarPorIdAsync(string id);
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -29,7 +30,7 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 _logger.LogInformation("Buscando categoria");
-                var categoria = _categoriaRepository.BuscarTodos();
+                var categoria = _categoriaRepository.BuscarTodosAsync();
 
                 if (categoria == null)
                     return BadRequest("categoria não encontrada");
@@ -49,7 +50,7 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 _logger.LogInformation("Buscando categoria");
-                var categoria = _categoriaRepository.BuscarPorId(id);
+                var categoria = _categoriaRepository.BuscarPorIdAsync(id);
 
                 if (categoria == null)
                     return BadRequest("categoria não encontrada");
@@ -84,11 +85,11 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult ExcluirCliente(string chassi)
+        public async Task<IActionResult> ExcluirCliente(string chassi)
         {
             try
             {
-                var categoria = _categoriaRepository.BuscarPorId(chassi);
+                var categoria = await _categoriaRepository.BuscarPorIdAsync(chassi);
 
                 if (categoria == null)
                     return BadRequest("Categoria não encontrado");

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Repository.EFCore
 {
@@ -12,37 +13,36 @@ namespace LocadoraVeiculos.Repository.EFCore
         {
             _context = context;
         }
-        public void Incluir(Carro obj)
+        public bool Incluir(Carro obj)
         {
             _context.Carro.Add(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
-        public void Excluir(Carro obj)
+        public bool Excluir(Carro obj)
         {
             _context.Carro.Remove(obj);
-            _context.SaveChanges();
+            return _context.SaveChanges() > 0;
         }
-        public void Atualizar(Carro obj)
+        public bool Atualizar(Carro obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
-            _context.SaveChanges();
+            var resultado = _context.SaveChanges() > 0;
             _context.Entry(obj).State = EntityState.Detached;
+            return resultado;
         }
-        public Carro BuscarPorId(string chassi)
+        public async Task<Carro> BuscarPorIdAsync(string chassi)
         {
-            var query = _context.Carro                
+            var query = await _context.Carro                
                 .Include(c => c.Categoria)
                 .Where(c => c.Chassi == chassi)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return query;
         }
 
-        public IEnumerable<Carro> BuscarTodos()
+        public async Task<IEnumerable<Carro>> BuscarTodosAsync()
         {
-            var query = _context.Carro.Include(c => c.Categoria).ToList();
-
-            return query;
+            return await _context.Carro.Include(c => c.Categoria).ToListAsync();
         }
     }
 
