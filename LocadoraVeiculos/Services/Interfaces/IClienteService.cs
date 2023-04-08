@@ -7,7 +7,7 @@ namespace LocadoraVeiculos.Services.Interfaces
 {
     public interface IClienteService
     {
-        bool IncluirCliente(Cliente cliente);
+        Task<bool> CadastrarCliente(Cliente cliente);
         Task<bool> ExcluirCliente(string cpf);
         Task<bool> AtualizarCliente(Cliente cliente);
         Task<ClienteReadDto> BuscarClienteCPFAsync(string cpf);

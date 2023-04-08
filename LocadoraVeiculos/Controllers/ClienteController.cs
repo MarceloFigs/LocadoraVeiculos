@@ -17,15 +17,13 @@ namespace LocadoraVeiculos.Controllers
         private readonly ILogger<ClienteController> _logger;
         private readonly IClienteService _clienteService;
         private readonly IValidator<Cliente> _validator;
-        private readonly ICEPService _iCepService;
 
         public ClienteController(ILogger<ClienteController> logger, IClienteService clienteService,
-            IValidator<Cliente> validator, ICEPService cepService)
+            IValidator<Cliente> validator)
         {
             _logger = logger;
             _clienteService = clienteService;
             _validator = validator;
-            _iCepService = cepService;
         }
 
         [HttpGet]
@@ -73,32 +71,16 @@ namespace LocadoraVeiculos.Controllers
         {
             try
             {
-                var endereco = await _iCepService.BuscarCEP(cliente.CEP);
-
-                if (endereco.UF == null)
-                    return BadRequest("cep invalido");
-
-                cliente.UF = endereco.UF;
-                cliente.Cidade = endereco.Cidade;
-                cliente.Logradouro = endereco.Logradouro;
-
                 var resultadoValidacao = _validator.Validate(cliente);
 
                 if (!resultadoValidacao.IsValid)
                     return BadRequest(resultadoValidacao.Errors);
 
-                _clienteService.IncluirCliente(cliente);
-                return Ok(cliente);
-                //var resultadoValidacao = _validator.Validate(cliente);
+                var resultado = await _clienteService.CadastrarCliente(cliente);
+                if (resultado is true)
+                    return Ok("Cliente cadastrado com sucesso!");
 
-                //if (!resultadoValidacao.IsValid)
-                //    return BadRequest(resultadoValidacao.Errors);
-
-                //var resultado = _clienteService.IncluirCliente(cliente);
-                //if (resultado is true) 
-                //    return Ok("Cliente cadastrado com sucesso!");
-
-                //return BadRequest("Erro ao tentar cadastrar cliente");
+                return BadRequest("Erro ao tentar cadastrar cliente");
             }
             catch (Exception ex)
             {

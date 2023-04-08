@@ -61,10 +61,5 @@ namespace LocadoraVeiculos.Services
             
             return _clienteRepository.Excluir(cliente);
         }
-
-        public bool IncluirCliente(Cliente cliente)
-        {
-            return _clienteRepository.Incluir(cliente);
-        }
     }
 }
