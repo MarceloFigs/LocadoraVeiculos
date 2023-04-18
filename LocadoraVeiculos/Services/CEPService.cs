@@ -1,4 +1,5 @@
 ﻿using LocadoraVeiculos.Models;
+using LocadoraVeiculos.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http;

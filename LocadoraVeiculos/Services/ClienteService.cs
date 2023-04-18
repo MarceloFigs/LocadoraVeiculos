@@ -3,9 +3,7 @@ using LocadoraVeiculos.Dtos;
 using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
 using LocadoraVeiculos.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Services

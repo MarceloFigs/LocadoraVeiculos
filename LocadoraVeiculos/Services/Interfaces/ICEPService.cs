@@ -1,7 +1,7 @@
 ﻿using LocadoraVeiculos.Models;
 using System.Threading.Tasks;
 
-namespace LocadoraVeiculos.Services
+namespace LocadoraVeiculos.Services.Interfaces
 {
     public interface ICEPService
     {
