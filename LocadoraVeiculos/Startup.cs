@@ -43,6 +43,7 @@ namespace LocadoraVeiculos
             services.AddScoped<IClienteService, ClienteService>();
             services.AddScoped<IClienteRepository, ClienteRepository>();            
             services.AddScoped<IValidator<Cliente>, ClienteValidator>();
+            services.AddScoped<ICarroService, CarroService>();
             services.AddScoped<ICarroRepository, CarroRepository>();
             services.AddScoped<IValidator<Carro>, CarroValidator>();
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();

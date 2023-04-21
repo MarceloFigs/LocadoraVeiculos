@@ -36,6 +36,9 @@ namespace LocadoraVeiculos.Services
 
         public async Task<bool> CadastrarCliente(Cliente cliente)
         {
+            var clienteExiste = await _clienteRepository.BuscarPorIdAsync(cliente.Cpf);
+            if (clienteExiste != null) return false;
+
             var endereco = await _iCepService.BuscarCEP(cliente.CEP);
             if (endereco.UF is null) return false;
 

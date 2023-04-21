@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using LocadoraVeiculos.Models;
-using LocadoraVeiculos.Services;
 using LocadoraVeiculos.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -117,7 +116,6 @@ namespace LocadoraVeiculos.Controllers
                     return BadRequest(resultadoValidacao.Errors);
 
                 var resultado = await _clienteService.AtualizarCliente(cliente);
-
                 if (resultado is false)
                     return BadRequest("Erro ao atualizar cliente");
 

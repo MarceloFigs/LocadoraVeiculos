@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using FluentValidation;
-using LocadoraVeiculos.Dtos;
+﻿using FluentValidation;
 using LocadoraVeiculos.Models;
-using LocadoraVeiculos.Repository;
+using LocadoraVeiculos.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,30 +14,32 @@ namespace LocadoraVeiculos.Controllers
     public class CarroController: ControllerBase
     {
         private readonly ILogger<CarroController> _logger;
-        private readonly ICarroRepository _carroRepository;
+        private readonly ICarroService _carroService;
+        //private readonly ICarroRepository _carroRepository;
         private readonly IValidator<Carro> _validator;
-        private readonly IMapper _mapper;
-        public CarroController(ILogger<CarroController> logger, ICarroRepository carroRepository,
-            IValidator<Carro> validator, IMapper mapper)
+        //private readonly IMapper _mapper;
+        public CarroController(ILogger<CarroController> logger, ICarroService carroService,//ICarroRepository carroRepository,
+            IValidator<Carro> validator/*, IMapper mapper*/)
         {
             _logger = logger;
-            _carroRepository = carroRepository;
+            _carroService = carroService;
+            //_carroRepository = carroRepository;
             _validator = validator;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult BuscarCarros()
+        public async Task<IActionResult> BuscarCarros()
         {
             try
             {
                 _logger.LogInformation("Buscando carro");
-                var carro = _carroRepository.BuscarTodosAsync();
+                var carro = await _carroService.BuscarCarrosAsync();
 
-                if (carro == null)
-                    return BadRequest("Carro não encontrado");
+                if (carro is null)
+                    return NotFound("Carro não encontrado");
 
-                return Ok(_mapper.Map<IEnumerable<CarroReadDto>>(carro));
+                return Ok(carro);
             }
             catch (Exception ex)
             {
@@ -50,17 +49,17 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpGet("{chassi}", Name = "BuscarCarroPorChassi")]
-        public IActionResult BuscarCarroPorChassi(string chassi)
+        public async Task<IActionResult> BuscarCarroPorChassi(string chassi)
         {
             try
             {
                 _logger.LogInformation("Buscando carro");
-                var carro = _carroRepository.BuscarPorIdAsync(chassi);
+                var carro = await _carroService.BuscarCarroChassiAsync(chassi);
 
-                if (carro == null)
-                    return BadRequest("Carro não encontrado");
+                if (carro is null)
+                    return NotFound("Carro não encontrado");
 
-                return Ok(_mapper.Map<CarroReadDto>(carro));
+                return Ok(carro);
             }
             catch (Exception ex)
             {
@@ -70,7 +69,7 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPost]
-        public IActionResult CadastrarCarro([FromBody] Carro carro)
+        public async Task<IActionResult> CadastrarCarro([FromBody] Carro carro)
         {
             try
             {
@@ -79,8 +78,11 @@ namespace LocadoraVeiculos.Controllers
                 if (!resultadoValidacao.IsValid)
                     return BadRequest(resultadoValidacao.Errors);
 
-                _carroRepository.Incluir(carro);
-                return Ok(carro);
+                var resultado = await _carroService.CadastrarCarro(carro);
+                if (resultado is true)
+                    return Ok("Carro cadastrado com sucesso!");
+
+                return BadRequest("Erro ao tentar cadastrar carro");
             }
             catch (Exception ex)
             {
@@ -90,17 +92,15 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpDelete("{chassi}")]
-        public async Task<IActionResult> ExcluirCliente(string chassi)
+        public async Task<IActionResult> ExcluirCarro(string chassi)
         {
             try
             {
-                var carro = await _carroRepository.BuscarPorIdAsync(chassi);
+                var resultado = await _carroService.ExcluirCarro(chassi);
+                if (resultado is true)
+                    return Ok("Carro excluido com sucesso!");
 
-                if (carro == null)
-                    return BadRequest("Carro não encontrado");
-
-                _carroRepository.Excluir(carro);
-                return Ok("Carro excluido com sucesso!");
+                return BadRequest("Erro ao tentar excluir carro");
             }
             catch (Exception ex)
             {
@@ -110,7 +110,7 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPut("{chassi}")]
-        public IActionResult AtualizarCliente([FromBody] Carro carro)
+        public async Task<IActionResult> AtualizarCarro([FromBody] Carro carro)
         {
             try
             {
@@ -119,7 +119,10 @@ namespace LocadoraVeiculos.Controllers
                 if (!resultadoValidacao.IsValid)
                     return BadRequest(resultadoValidacao.Errors);
 
-                _carroRepository.Atualizar(carro);
+                var resultado = await _carroService.AtualizarCarro(carro);
+                if (resultado is false)
+                    return BadRequest("Erro ao atualizar carro");
+                
                 return Ok("Carro atualizado com sucesso!");
             }
             catch (Exception ex)
