@@ -20,15 +20,15 @@ namespace LocadoraVeiculos.Repository.EFCore
             _context.Entry(obj).State = EntityState.Detached;
             return resultado;
         }
-        public Alocação BuscarAlocação(string cpf, string chassi)
+        public async Task<Alocação> BuscarAlocaçãoPorCPFeChassi(string cpf, string chassi)
         {
-            var query = _context.Alocação
+            var query = await _context.Alocação
                 .Include(c => c.Cliente)
                 .Include(c => c.Carro)
                 .Include(c => c.Carro.Categoria)
                 .Where(a => a.Cpf == cpf && a.Chassi == chassi)
-                .FirstOrDefault();
-            
+                .FirstOrDefaultAsync();
+
             return query;
         }
         public async Task<Alocação> BuscarPorIdAsync(string id)

@@ -1,13 +1,11 @@
-﻿using AutoMapper;
-using FluentValidation;
-using LocadoraVeiculos.Dtos;
+﻿using FluentValidation;
 using LocadoraVeiculos.Models;
-using LocadoraVeiculos.Repository;
+using LocadoraVeiculos.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Controllers
 {
@@ -16,31 +14,29 @@ namespace LocadoraVeiculos.Controllers
     public class AlocaçãoController : ControllerBase
     {
         private readonly ILogger<AlocaçãoController> _logger;
-        private readonly IAlocaçãoRepository _alocaçãoRepository;
+        private readonly IAlocaçãoService _alocaçãoService;
         private readonly IValidator<Alocação> _validator;
-        private readonly IMapper _mapper;
 
-        public AlocaçãoController(ILogger<AlocaçãoController> logger, IAlocaçãoRepository alocaçãoRepository,
-            IValidator<Alocação> validator, IMapper mapper)
+        public AlocaçãoController(ILogger<AlocaçãoController> logger, IAlocaçãoService alocaçãoService,
+            IValidator<Alocação> validator)
         {
             _logger = logger;
-            _alocaçãoRepository = alocaçãoRepository;
+            _alocaçãoService = alocaçãoService;
             _validator = validator;
-            _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult BuscarTodasAlocações()
+        public async Task<IActionResult> BuscarTodasAlocações()
         {
             try
             {
                 _logger.LogInformation("Buscando alocação");
-                var alocação = _alocaçãoRepository.BuscarTodosAsync();
+                var alocação = await _alocaçãoService.BuscarTodasAlocaçõesAsync();
 
-                if (alocação == null)
-                    return BadRequest("alocação não encontrada");
+                if (alocação is null)
+                    return NotFound("alocação não encontrada");
 
-                return Ok(_mapper.Map<IEnumerable<AlocaçãoReadDto>>(alocação));
+                return Ok(alocação);
             }
             catch (Exception ex)
             {
@@ -49,18 +45,18 @@ namespace LocadoraVeiculos.Controllers
             }
         }
 
-        [HttpGet("{cpf}/{chassi}", Name = "BuscarAlocaçãoPorId")]
-        public IActionResult BuscarAlocaçãoPorId(string cpf, string chassi)
+        [HttpGet("{cpf}/{chassi}", Name = "BuscarAlocaçãoPorCPFeChassi")]
+        public async Task<IActionResult> BuscarAlocaçãoPorCPFeChassi(string cpf, string chassi)
         {
             try
             {
                 _logger.LogInformation("Buscando alocação");
-                var alocação = _alocaçãoRepository.BuscarAlocação(cpf, chassi);
+                var alocação = await _alocaçãoService.BuscarAlocaçãoPorCPFeChassiAsync(cpf, chassi);
 
-                if (alocação == null)
-                    return BadRequest("alocação não encontrada");
+                if (alocação is null)
+                    return NotFound("alocação não encontrada");
 
-                return Ok(_mapper.Map<AlocaçãoReadDto>(alocação));
+                return Ok(alocação);
             }
             catch (Exception ex)
             {
@@ -70,21 +66,65 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPost]
-        public IActionResult CadastrarAlocação([FromBody] Alocação alocação)
+        public async Task<IActionResult> CadastrarAlocação([FromBody] Alocação alocação)
         {
             try
             {
                 var resultadoValidacao = _validator.Validate(alocação);
 
                 if (!resultadoValidacao.IsValid)
-                   return BadRequest(resultadoValidacao.Errors);
+                    return BadRequest(resultadoValidacao.Errors);
 
-                _alocaçãoRepository.Incluir(alocação);
-                return Ok(alocação);
+                var resultado = await _alocaçãoService.CadastrarAlocação(alocação);
+                if (resultado is true)
+                    return Ok("Alocação cadastrada com sucesso!");
+
+                return BadRequest("Erro ao tentar cadastrar alocação");
             }
             catch (Exception ex)
             {
                 _logger.LogError("Ocorreu um erro ao cadastrar alocação");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("{cpf}/{chassi}")]
+        public async Task<IActionResult> ExcluirAlocação(string cpf, string chassi)
+        {
+            try
+            {
+                var resultado = await _alocaçãoService.ExcluirAlocação(cpf, chassi);
+                if (resultado is true)
+                    return Ok("Alocação excluida com sucesso!");
+
+                return BadRequest("Erro ao tentar excluir alocação");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro ao excluir alocação");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut("{cpf}/{chassi}")]
+        public async Task<IActionResult> AtualizarAlocação([FromBody] Alocação alocação)
+        {
+            try
+            {
+                var resultadoValidacao = _validator.Validate(alocação);
+
+                if (!resultadoValidacao.IsValid)
+                    return BadRequest(resultadoValidacao.Errors);
+
+                var resultado = await _alocaçãoService.AtualizarAlocação(alocação);
+                if (resultado is true)
+                    return Ok("Alocação atualizada com sucesso!");
+
+                return BadRequest("Erro ao atualizar alocação");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro ao atualizar alocação");
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }

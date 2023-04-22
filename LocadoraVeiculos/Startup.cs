@@ -49,6 +49,7 @@ namespace LocadoraVeiculos
             services.AddScoped<ICategoriaService, CategoriaService>();
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<IValidator<Categoria>, CategoriaValidator>();
+            services.AddScoped<IAlocaçãoService, AlocaçãoService>();
             services.AddScoped<IAlocaçãoRepository, AlocaçãoRepository>();
             services.AddScoped<IValidator<Alocação>, AlocaçãoValidator>();
             services.AddScoped<ICEPService, CEPService>();
