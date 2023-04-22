@@ -2,10 +2,8 @@
 using LocadoraVeiculos.Dtos;
 using LocadoraVeiculos.Models;
 using LocadoraVeiculos.Repository;
-using LocadoraVeiculos.Repository.EFCore;
 using LocadoraVeiculos.Services.Interfaces;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace LocadoraVeiculos.Services

@@ -11,21 +11,18 @@ namespace LocadoraVeiculos.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CarroController: ControllerBase
+    public class CarroController : ControllerBase
     {
         private readonly ILogger<CarroController> _logger;
         private readonly ICarroService _carroService;
-        //private readonly ICarroRepository _carroRepository;
         private readonly IValidator<Carro> _validator;
-        //private readonly IMapper _mapper;
-        public CarroController(ILogger<CarroController> logger, ICarroService carroService,//ICarroRepository carroRepository,
-            IValidator<Carro> validator/*, IMapper mapper*/)
+
+        public CarroController(ILogger<CarroController> logger, ICarroService carroService,
+            IValidator<Carro> validator)
         {
             _logger = logger;
             _carroService = carroService;
-            //_carroRepository = carroRepository;
             _validator = validator;
-            //_mapper = mapper;
         }
 
         [HttpGet]
@@ -120,10 +117,10 @@ namespace LocadoraVeiculos.Controllers
                     return BadRequest(resultadoValidacao.Errors);
 
                 var resultado = await _carroService.AtualizarCarro(carro);
-                if (resultado is false)
-                    return BadRequest("Erro ao atualizar carro");
-                
-                return Ok("Carro atualizado com sucesso!");
+                if (resultado is true)
+                    return Ok("Carro atualizado com sucesso!");
+
+                return BadRequest("Erro ao atualizar carro");
             }
             catch (Exception ex)
             {

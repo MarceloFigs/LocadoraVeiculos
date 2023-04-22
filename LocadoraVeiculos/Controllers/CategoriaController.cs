@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using LocadoraVeiculos.Models;
-using LocadoraVeiculos.Repository;
+using LocadoraVeiculos.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,26 +14,27 @@ namespace LocadoraVeiculos.Controllers
     public class CategoriaController : ControllerBase
     {
         private readonly ILogger<CategoriaController> _logger;
-        private readonly ICategoriaRepository _categoriaRepository;
+        private readonly ICategoriaService _categoriaService;
         private readonly IValidator<Categoria> _validator;
-        public CategoriaController(ILogger<CategoriaController> logger, ICategoriaRepository categoriaRepository,
+        
+        public CategoriaController(ILogger<CategoriaController> logger, ICategoriaService categoriaService,
             IValidator<Categoria> validator)
         {
             _logger = logger;
-            _categoriaRepository = categoriaRepository;
+            _categoriaService = categoriaService;            
             _validator = validator;
         }
 
         [HttpGet]
-        public IActionResult BuscarCategoria()
+        public async Task<IActionResult> BuscarCategoria()
         {
             try
             {
                 _logger.LogInformation("Buscando categoria");
-                var categoria = _categoriaRepository.BuscarTodosAsync();
+                var categoria = await _categoriaService.BuscarCategoriasAsync();
 
-                if (categoria == null)
-                    return BadRequest("categoria não encontrada");
+                if (categoria is null)
+                    return NotFound("categoria não encontrada");
 
                 return Ok(categoria);
             }
@@ -45,15 +46,15 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpGet("{id}", Name = "BuscarCategoriaPorID")]
-        public IActionResult BuscarCategoriaPorId(string id)
+        public async Task<IActionResult> BuscarCategoriaPorId(int id)
         {
             try
             {
                 _logger.LogInformation("Buscando categoria");
-                var categoria = _categoriaRepository.BuscarPorIdAsync(id);
+                var categoria = await _categoriaService.BuscarCategoriaPorIdAsync(id);
 
-                if (categoria == null)
-                    return BadRequest("categoria não encontrada");
+                if (categoria is null)
+                    return NotFound("categoria não encontrada");
 
                 return Ok(categoria);
             }
@@ -65,17 +66,20 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPost]
-        public IActionResult CadastrarCarro([FromBody] Categoria categoria)
+        public async Task<IActionResult> CadastrarCategoria([FromBody] Categoria categoria)
         {
             try
             {
                 var resultadoValidacao = _validator.Validate(categoria);
 
                 if (!resultadoValidacao.IsValid)
-                return BadRequest(resultadoValidacao.Errors);
+                    return BadRequest(resultadoValidacao.Errors);
 
-                _categoriaRepository.Incluir(categoria);
-                return Ok(categoria);
+                var resultado = await _categoriaService.CadastrarCategoria(categoria);
+                if (resultado is true)
+                    return Ok("Categoria cadastrada com sucesso!");
+
+                return BadRequest("Erro ao tentar cadastrar categoria");
             }
             catch (Exception ex)
             {
@@ -85,17 +89,15 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> ExcluirCliente(string chassi)
+        public async Task<IActionResult> ExcluirCategoria(int id)
         {
             try
             {
-                var categoria = await _categoriaRepository.BuscarPorIdAsync(chassi);
-
-                if (categoria == null)
-                    return BadRequest("Categoria não encontrado");
-
-                _categoriaRepository.Excluir(categoria);
-                return Ok("Categoria excluido com sucesso!");
+                var resultado = await _categoriaService.ExcluirCategoria(id);
+                if (resultado is true) 
+                    return Ok("Categoria excluida com sucesso!");
+                
+                return BadRequest("Categoria não encontrado");
             }
             catch (Exception ex)
             {
@@ -105,17 +107,20 @@ namespace LocadoraVeiculos.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult AtualizarCliente([FromBody] Categoria categoria)
+        public IActionResult AtualizarCategoria([FromBody] Categoria categoria)
         {
             try
             {
                 var resultadoValidacao = _validator.Validate(categoria);
 
                 if (!resultadoValidacao.IsValid)
-                return BadRequest(resultadoValidacao.Errors);
+                    return BadRequest(resultadoValidacao.Errors);
 
-                _categoriaRepository.Atualizar(categoria);
-                return Ok("Categoria atualizado com sucesso!");
+                var resultado = _categoriaService.AtualizarCategoria(categoria);
+                if (resultado is true)
+                    return Ok("Categoria atualizado com sucesso!");
+
+                return BadRequest("Erro ao atualizar categoria");
             }
             catch (Exception ex)
             {

@@ -94,7 +94,8 @@ namespace LocadoraVeiculos.Controllers
             try
             {
                 var resultado = await _clienteService.ExcluirCliente(cpf);
-                if (resultado is true) return Ok("Cliente excluido com sucesso!");
+                if (resultado is true) 
+                    return Ok("Cliente excluido com sucesso!");
 
                 return BadRequest("Erro ao tentar excluir cliente");
             }
@@ -116,10 +117,10 @@ namespace LocadoraVeiculos.Controllers
                     return BadRequest(resultadoValidacao.Errors);
 
                 var resultado = await _clienteService.AtualizarCliente(cliente);
-                if (resultado is false)
-                    return BadRequest("Erro ao atualizar cliente");
+                if (resultado is true)
+                    return Ok("Cliente atualizado com sucesso!");
 
-                return Ok("Cliente atualizado com sucesso!");
+                return BadRequest("Erro ao atualizar cliente");               
             }
             catch (Exception ex)
             {
